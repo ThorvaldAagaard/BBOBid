@@ -1,0 +1,37 @@
+{
+	"manifest_version": 2,
+	"name": "Suggest Bid",
+	"description": "Suggest bid on BBO",
+	"version": "0.0.4",
+	"icons": {
+		"16": "BBOBid16.png",
+		"48": "BBOBid48.png",
+		"128": "BBOBid128.png"
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"*://www.bridgebase.com/v3/*",
+				"*://bidding.snippen.dk/*",
+				"*://remote.aalborgdata.dk/*"
+			],
+			"css": [
+				"BBOBid.css"
+			],
+			"js": [
+				"functions.js",
+				"BBOBid.js"
+			],
+			"all_frames": true
+		}
+	],
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "extension@thorvald.github.com"
+		}
+	},
+	"permissions": [
+		"https://bidding.snippen.dk/",
+		"https://remote.aalborgdata.dk/"
+	]
+}
