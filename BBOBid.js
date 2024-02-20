@@ -137,8 +137,8 @@ function getBidsAsync(biddingCtx) {
 	}
 	return new Promise(function (resolve, reject) {
 		var url =
-			//"https://bidding.snippen.dk/PossibleBids.asp" +
-			"https://remote.aalborgdata.dk/hint" +
+			"https://bidding.snippen.dk/PossibleBids.asp" +
+			//"https://remote.aalborgdata.dk/hint" +
 			"?ctx=" + biddingCtx +
 			"&ID=" + SystemID +
 			"&vul=" + ourVulnerabilityAutoBid() + areTheyVulnerableAutoBid() +
@@ -209,15 +209,19 @@ function showBids(biddingCtx) {
 		//addLog("Context: " + biddingCtx)
 		//addLog("Response: " + resp)
 		autoBidLog("Context: " + biddingCtx)
-        const jsonResponse = JSON.parse(resp);
-		autoBidLog(jsonResponse.bid);
-		var bid = jsonResponse.bid.replace('PASS','P');
-		console.log("Making bid: " + bid)
-		makeBid = "Makebid('"+bid+"',0,'')"
-		var newScript = document.createElement("script");
-		var inlineScript = document.createTextNode(makeBid);
-		newScript.appendChild(inlineScript);
-		document.body.appendChild(newScript);
+		var s1 = document.getElementById('bbobid-p1');
+		if (s1 == null) return;
+		s1.innerHTML += resp + "<br>";
+
+        //const jsonResponse = JSON.parse(resp);
+		//autoBidLog(jsonResponse.bid);
+		//var bid = jsonResponse.bid.replace('PASS','P');
+		//console.log("Making bid: " + bid)
+		// makeBid = "Makebid('"+bid+"',0,'')"
+		// var newScript = document.createElement("script");
+		// var inlineScript = document.createTextNode(resp);
+		// newScript.appendChild(inlineScript);
+		// document.body.appendChild(newScript);
 	}
 	)
 }
