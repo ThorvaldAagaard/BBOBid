@@ -1,18 +1,19 @@
 
-var version = 'Suggest Bid: ' + chrome.runtime.getManifest().version;
+var version = document.title;
 var logText = version + '\n' + navigator.userAgent + '\n';
+var PWD = parent.window.document;
 
 function getNavDiv() {
-	return document.getElementById('navDiv');
+	return PWD.getElementById('navDiv');
 }
 
 function whoAmI() {
-	var nb = document.querySelector('.navBarClass');
+	var nb = PWD.querySelector('.navBarClass');
 	if (nb == null) {
 		addLog('whoAmI .navBarClass not found');
 		return '';
 	}
-	var nt = document.querySelector('.nameTagClass');
+	var nt = PWD.querySelector('.nameTagClass');
 	if (nt == null) {
 		addLog('whoAmI .nameTagClass not found');
 		return '';
@@ -29,14 +30,14 @@ var triggerDragAndDrop = function (selectorDrag, selectorDrop, dist) {
 
 	// function for triggering mouse events
 	var fireMouseEvent = function (type, elem, centerX, centerY) {
-		var evt = document.createEvent('MouseEvents');
+		var evt = PWD.createEvent('MouseEvents');
 		evt.initMouseEvent(type, true, true, window, 1, 1, 1, centerX, centerY, false, false, false, false, 0, elem);
 		elem.dispatchEvent(evt);
 	};
 
 	// fetch target elements
-	var elemDrag = document.querySelector(selectorDrag);
-	var elemDrop = document.querySelector(selectorDrop);
+	var elemDrag = PWD.querySelector(selectorDrag);
+	var elemDrop = PWD.querySelector(selectorDrop);
 	if (!elemDrag || !elemDrop) return false;
 
 	// calculate positions
@@ -96,7 +97,7 @@ function ourVulnerabilityAutoBid() {
 }
 
 function openTabAutoBid() {
-	var vc = document.querySelectorAll('.verticalClass');
+	var vc = PWD.querySelectorAll('.verticalClass');
 	for (var j = 0; j < vc.length; j++) {
 		if (vc[j].innerText == "Suggest Bid") {
 			if (vc[j].style.display != 'block') {
@@ -110,14 +111,14 @@ function openTabAutoBid() {
 }
 
 function closeTabAutoBid() {
-	var vc = document.querySelectorAll('.verticalClass');
+	var vc = PWD.querySelectorAll('.verticalClass');
 	for (var j = 0; j < vc.length; j++) {
 		if (vc[j].innerText == "Suggest Bid") {
 			console.log("Hide BBOAutoBid")
 			vc[j].style.display = 'none';
 		}
 	}
-	var bidpanel0 = document.getElementById("bidpanel0");
+	var bidpanel0 = PWD.getElementById("bidpanel0");
 	if (bidpanel0 == null) return;
 	console.log("Closing BBOAutoBid")
 	bidpanel0.style.display = 'none';
@@ -131,7 +132,7 @@ function setOptionsOff() {
 function setTabEvents() {
 	console.log("SetTabEvents");
 	//debugger;
-	var rd = document.getElementById('rightDiv');
+	var rd = PWD.getElementById('rightDiv');
 	if (rd == null) return;
 	var vt = rd.querySelector('.verticalTabBarClass');
 	if (vt == null) return;
@@ -147,7 +148,7 @@ function setTabEvents() {
 
 function setOptions(on) {
 	console.log("setOptions: ", on)
-	var bidpanel0 = document.getElementById("bidpanel0");
+	var bidpanel0 = PWD.getElementById("bidpanel0");
 	if (bidpanel0 == null) return;
 	if (on) {
 		console.log("Showing bidpanel")
@@ -161,7 +162,7 @@ function setOptions(on) {
 		console.log("Hiding bidpanel")
 		bidpanel0.style.display = 'none';
 	}
-	var b = document.getElementById('bbobid-tab');
+	var b = PWD.getElementById('bbobid-tab');
 	if (b == null) return;
 	var t = b.querySelector('.verticalClass');
 	if (t == null) return;
@@ -175,7 +176,7 @@ function setOptions(on) {
 }
 
 function toggleOptions() {
-	var bidpanel0 = document.getElementById("bidpanel0");
+	var bidpanel0 = PWD.getElementById("bidpanel0");
 	if (bidpanel0 == null) return;
 	if (bidpanel0.style.display == 'none') {
 		setOptions(true);
@@ -187,8 +188,8 @@ function toggleOptions() {
 function addAutoBidTab() {
 	console.log("addAutoBidTab")
 	//debugger;
-	if (document.getElementById('bbobid-tab') != null) return;
-	var rd = document.getElementById('rightDiv');
+	if (PWD.getElementById('bbobid-tab') != null) return;
+	var rd = PWD.getElementById('rightDiv');
 	if (rd == null) return;
 	var vt = rd.querySelector('.verticalTabBarClass');
 	if (vt == null) return;
@@ -203,7 +204,7 @@ function addAutoBidTab() {
 	t.style.color = 'white';
 	t.backgroundColor = 'red';
 	vt.appendChild(t);
-	t = document.getElementById('bbobid-tab');
+	t = PWD.getElementById('bbobid-tab');
 	t.onclick = toggleOptions;
 }
 
@@ -319,7 +320,7 @@ function DisplayHand() {
 	if (dealNo != lastHandDisplayed) {
 		var direction = myDirection();
 		currentHand = "";
-		var nd = document.getElementById('navDiv')
+		var nd = PWD.getElementById('navDiv')
 		if (nd == null) return false;
 		clearAutoBidLog();
 		lastHandDisplayed = getDealNumberAutoBid();
@@ -406,30 +407,30 @@ function getBiddingBoxAutoBid() {
 }
 
 function isSplitScreen() {
-	var nb = document.querySelector('.navBarClass');
+	var nb = PWD.querySelector('.navBarClass');
 	return isVisible(nb);
 }
 
 function isBBOready() {
-	return (isVisible(document.querySelector('.infoStat')));
+	return (isVisible(PWD.querySelector('.infoStat')));
 }
 
 function setControlButtonsAutoBid() {
 	console.log("setControlButtonsAutoBid")
-	//var bar = document.querySelector('.moreMenuDivClass');
-	var adPanel = document.getElementById("bidpanel");
+	//var bar = PWD.querySelector('.moreMenuDivClass');
+	var adPanel = PWD.getElementById("bidpanel");
 	//if (bar == null) return false;
 	//if (!isVisible(bar)) return false;
 	addAutoBidTab();
 	if (adPanel.querySelector('#bbobid-s1') == null) {
-		var s1 = document.createElement("p");
+		var s1 = PWD.createElement("p");
 		s1.textContent = "";
 		s1.style.fontSize = "16px";
 		s1.id = 'bbobid-s1';
 		adPanel.appendChild(s1);
 	}
 	if (adPanel.querySelector('#bbobid-b1') == null) {
-		var b3 = document.createElement("button");
+		var b3 = PWD.createElement("button");
 		b3.textContent = "Suggest a bid";
 		b3.id = 'bbobid-b1';
 		b3.style.fontSize = "22px";
@@ -437,7 +438,7 @@ function setControlButtonsAutoBid() {
 		adPanel.appendChild(b3);
 	}
 	if (adPanel.querySelector('#bbobid-h1') == null) {
-		var b4 = document.createElement("button");
+		var b4 = PWD.createElement("button");
 		b4.textContent = "Get systems";
 		b4.id = 'bbobid-h1';
 		b4.style.fontSize = "22px";
@@ -445,7 +446,7 @@ function setControlButtonsAutoBid() {
 		adPanel.appendChild(b4);
 	}
 	if (adPanel.querySelector('#bbobid-p1') == null) {
-		var p1 = document.createElement("p");
+		var p1 = PWD.createElement("p");
 		p1.textContent = "";
 		p1.id = 'bbobid-p1';
 		adPanel.appendChild(p1);
@@ -455,23 +456,23 @@ function setControlButtonsAutoBid() {
 
 function autoBidLog(txt) {
 	//console.log(txt);
-	var p1 = document.getElementById('bbobid-p1');
+	var p1 = PWD.getElementById('bbobid-p1');
 	if (p1 == null) return;
 	p1.innerHTML += txt + "<br>";
 }
 
 function clearAutoBidLog() {
 	//console.log(txt);
-	var p1 = document.getElementById('bbobid-p1');
+	var p1 = PWD.getElementById('bbobid-p1');
 	if (p1 == null) return;
 	p1.innerHTML = "";
 }
 
 function setPanelAutoBid() {
-	if (document.getElementById("bidpanel") != null) return;
-	var appPanel = document.getElementById("rightDiv");
+	if (PWD.getElementById("bidpanel") != null) return;
+	var appPanel = PWD.getElementById("rightDiv");
 	if (appPanel == null) return;
-	var bidpanel0 = document.createElement("div");
+	var bidpanel0 = PWD.createElement("div");
 	bidpanel0.id = 'bidpanel0';
 	bidpanel0.style.position = 'absolute';
 	bidpanel0.style.top = '0px';
@@ -483,7 +484,7 @@ function setPanelAutoBid() {
 	bidpanel0.style.right = '35px';
 	appPanel.appendChild(bidpanel0);
 
-	var adPanel1 = document.createElement("div");
+	var adPanel1 = PWD.createElement("div");
 	adPanel1.setAttribute('class', 'center');
 	adPanel1.style.position = 'absolute';
 	adPanel1.id = "bidpanel";
@@ -496,7 +497,7 @@ function setPanelAutoBid() {
 // For each group of options, select only the first one
 function initOptionDefaultsAutoBid() {
 	console.log("initOptionDefaults")
-	var adPanel = document.getElementById("bidpanel");
+	var adPanel = PWD.getElementById("bidpanel");
 	if (adPanel == null) return;
 	var oldPrefix = "";
 	var btns = adPanel.querySelectorAll('button');

@@ -10,21 +10,18 @@ var currentHand = "";
 
 
 function isSuggestBidLoaded() {
-	return (document.getElementById("bbobid-tab") != null);
+	return (PWD.getElementById("bbobid-tab") != null);
 }
 
 // Find the bidding box element and check if new data present 
 function setBiddingBoxAutoBid() {
-	//console.log("setBiddingBoxAutoBid- Start " + getNowAutoBid(true))
 	table = tableType();
-	//console.log("Table type: " + table);
-	if (table == "practice" || table == "game") {
+	if (table == "practice") {
 		if (!isSuggestBidLoaded()) {
 			setPanelAutoBid();
 			setControlButtonsAutoBid();
 			// complete initial setup
 			SystemID = localStorage.getItem('SuggestBid');
-			//console.log(SystemID);
 			if (SystemID != null) {
 				autoBidLog(version + "<br>ID= " + SystemID);
 
@@ -33,44 +30,38 @@ function setBiddingBoxAutoBid() {
 			}
 			showSystems();
 			setTabEvents();
-			//			if (isBBOready()) {
-			//				setControlButtonsAutoBid();
-			//			}
 			console.log("Who Am I: " + whoAmI());
 			lastHandDisplayed = "";
 			currentHand = "";
 		}
-		var ad = document.getElementById("bbo_ad1");
+		var ad = PWD.getElementById("bbo_ad1");
 		if (ad != null) ad.remove();
-		ad = document.getElementById("bbo_ad2");
+		ad = PWD.getElementById("bbo_ad2");
 		if (ad != null) ad.remove();
 		openTabAutoBid();
-		var elBiddingBox = document.querySelector(".biddingBoxClass");
+		var elBiddingBox = PWD.querySelector(".biddingBoxClass");
 		//console.log("BiddingBox=" + (elBiddingBox != null))
 		if (elBiddingBox != null) {
 			var elBiddingButtons = elBiddingBox.querySelectorAll(".biddingBoxButtonClass");
 			if (elBiddingButtons != null) {
 				haveCards = DisplayHand();
-//				debugger;
 				if (haveCards && elBiddingBox.style.display != "none" && IsMyTurn()) {
 					var elAlertExplain = getExplainInput();
 					if (elAlertExplain != null) {
 						elAlertExplain.maxLength = 59;
 					};
 					getPossibleBids();
-					//console.log(elAlertExplain)
 				}
 			}
 		}
 	} else {
 		closeTabAutoBid();
 	}
-	//console.log("setBiddingBoxAutoBid - Exit")
 }
+
 function IsMyTurn() {
 	var currentContext = getContext();
 	var myTurn = findMyTurn();
-	//console.log("My turn: " + myTurn + " My Direction: " + myDirection() + " Context: " + currentContext + " Length: " + currentContext.length);
 	return 1 + (currentContext.length/2) % 4 == myTurn;
 }
 
@@ -138,7 +129,6 @@ function getBidsAsync(biddingCtx) {
 	return new Promise(function (resolve, reject) {
 		var url =
 			"https://bidding.snippen.dk/PossibleBids.asp" +
-			//"https://remote.aalborgdata.dk/hint" +
 			"?ctx=" + biddingCtx +
 			"&ID=" + SystemID +
 			"&vul=" + ourVulnerabilityAutoBid() + areTheyVulnerableAutoBid() +
@@ -192,45 +182,40 @@ function tableType() {
 		return 'no';
 	}
 	// get score panel
-	var sp = document.querySelector('.scorePanelClass');
+	var sp = PWD.querySelector('.scorePanelClass');
 	// if no score panel element -> no table
 	//if (sp == null) return 'no';
 	// if score panel not displayed -> practice table
-	if ((sp == null) || (sp.style.display == 'none')) return 'practice';
+	if ((sp == null) || (sp.style.display == 'none')) {
+		// Select the element with class "titleBlock"
+		const titleBlock = PWD.querySelector('.titleBlock');
+
+		// Check if the element exists and its inner text contains the word "challenge"
+		if (titleBlock && titleBlock.innerText.includes('Challenge')) {
+			return 'challenge';
+		} else {
+			return 'practice';
+		}
+	}
 	// if score panel displayed -> game table
 	return 'game';
 }
 
 // Display available bids
 function showBids(biddingCtx) {
-	//return;
 	console.log("showBids");
 	getBidsAsync(biddingCtx).then((resp) => {
-		//addLog("Context: " + biddingCtx)
-		//addLog("Response: " + resp)
 		autoBidLog("Context: " + biddingCtx)
-		var s1 = document.getElementById('bbobid-p1');
+		var s1 = PWD.getElementById('bbobid-p1');
 		if (s1 == null) return;
 		s1.innerHTML += resp + "<br>";
 
-        //const jsonResponse = JSON.parse(resp);
-		//autoBidLog(jsonResponse.bid);
-		//var bid = jsonResponse.bid.replace('PASS','P');
-		//console.log("Making bid: " + bid)
-		// makeBid = "Makebid('"+bid+"',0,'')"
-		// var newScript = document.createElement("script");
-		// var inlineScript = document.createTextNode(resp);
-		// newScript.appendChild(inlineScript);
-		// document.body.appendChild(newScript);
-	}
-	)
+	})
 }
 
 function loadScript() {
-	var newScript = document.createElement("script");
-	//var inlineScript = document.createTextNode("function systemChange(selectObj) {	var idx = selectObj.selectedIndex;	SystemID = selectObj.options[idx].value; localStorage.setItem('SuggestBid', SystemID); alert('1');}");
+	var newScript = PWD.createElement("script");
 	newScript.text = "function systemChange(selectObj) { var idx = selectObj.selectedIndex; SystemID = selectObj.options[idx].value; localStorage.setItem('SuggestBid', SystemID);  };\n"
-	//newScript.text += "function Makebid(bid) { alert(bid) };\n" 
 	newScript.text += "function triggerMouseEvent(node, eventType) {\n"
 	newScript.text += "		var clickEvent = document.createEvent('MouseEvents');\n"
 	newScript.text += "		clickEvent.initEvent(eventType, true, true);\n"
@@ -273,22 +258,21 @@ function loadScript() {
 	newScript.text += "}\n"
 	newScript.text += "}\n"
 	newScript.text += "}};\n"
-	//console.log(newScript.text)
-	document.getElementsByTagName('head')[0].appendChild(newScript);
+	PWD.getElementsByTagName('head')[0].appendChild(newScript);
 }
 
 loadScript();
 
-// Display available bids
+// Display available systems
 function showSystems() {
 	console.log("showSystems");
 	getBiddingsystemsAsync().then((resp) => {
 		addLog("Response: " + resp)
-		var s1 = document.getElementById('bbobid-s1');
+		var s1 = PWD.getElementById('bbobid-s1');
 		if (s1 == null) return;
 		s1.innerHTML += resp + "<br>";
-		if ((document.getElementById("systems") != null) && (SystemID != null)) {
-			setSelectedIndex(document.getElementById("systems"), SystemID);
+		if ((PWD.getElementById("systems") != null) && (SystemID != null)) {
+			setSelectedIndex(PWD.getElementById("systems"), SystemID);
 		}
 	})
 
@@ -327,16 +311,15 @@ function suggestSystem() {
 }
 
 function setControlButtonEventsAutoBid() {
-	var b = document.querySelector('#bbobid-b1');
+	var b = PWD.querySelector('#bbobid-b1');
 	if (b != null)
 		if (b.onmousedown == null) b.onmousedown = suggestBid;
-	var b = document.querySelector('#bbobid-h1');
+	var b = PWD.querySelector('#bbobid-h1');
 	if (b != null)
 		if (b.onmousedown == null) b.onmousedown = suggestSystem;
 }
 
 var count = 0;
 var timerId = setInterval(() => {
-	//console.log("execution: ", count++, ' Location : ', location.href);
 	setBiddingBoxAutoBid()
 }, 2000);

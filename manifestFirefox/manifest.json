@@ -1,5 +1,5 @@
 {
-	"manifest_version": 3,
+	"manifest_version": 2,
 	"name": "Suggest Bid",
 	"description": "Suggest bid on BBO",
 	"version": "0.0.4.1",
@@ -8,15 +8,10 @@
 		"48": "BBOBid48.png",
 		"128": "BBOBid128.png"
 	},
-	"web_accessible_resources": [{
-		"resources": [
+    "web_accessible_resources": [
 				"functions.js",
 				"BBOBid.js"
-	],
-		"matches": [
-			"https://*/*"
-		]
-	}],
+    ],
 	"content_scripts": [
 		{
 			"matches": [
@@ -33,5 +28,13 @@
 			],
 			"all_frames": true
 		}
+	],
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "extension@thorvald.github.com"
+		}
+	},
+	"permissions": [
+		"https://bidding.snippen.dk/"
 	]
 }
